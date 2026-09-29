@@ -86,17 +86,7 @@ The top cue words include "my", "read", "learned", "discovered", "someone", "fri
 
 ## Dashboard
 
-[Link or screenshot: see `dashboard_plan.md` for the build plan]
-
-## Repository layout (adjust to your files)
-
-```
-README.md
-dashboard_plan.md
-data/tiktok_dataset.csv
-notebooks/   (EDA, hypothesis test, regression, text model, masking test)
-reports/     (stakeholder slide deck)
-```
+Not Yet Published.
 
 ## Tools
 
