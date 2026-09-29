@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Claims vs opinions: TikTok classification findings</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@500;600&family=IBM+Plex+Sans:wght@400;500&display=swap">
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#14171c;--ink2:#4a505a;--line:#dfe2e7;--claim:#2a78d6;--op:#e0602a;--warn-bg:#fdf1e7;--warn-ink:#8a3a10;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181d;--card:#1e2229;--ink:#eceef1;--ink2:#a9afb8;--line:#333943;--claim:#5b9cf0;--op:#f0885a;--warn-bg:#3a271b;--warn-ink:#f5c29e}}
+:root[data-theme="dark"]{--bg:#15181d;--card:#1e2229;--ink:#eceef1;--ink2:#a9afb8;--line:#333943;--claim:#5b9cf0;--op:#f0885a;--warn-bg:#3a271b;--warn-ink:#f5c29e}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:400 clamp(15px,1.6vw,19px)/1.55 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column}
+main{flex:1;min-height:0;position:relative;overflow:hidden}
+.s{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;padding:clamp(20px,5vw,72px);max-width:1100px;margin:0 auto;overflow-y:auto}
+.s.on{display:flex}
+h1,h2{font-family:Newsreader,Georgia,"Times New Roman",serif;font-weight:600;line-height:1.15;margin:0 0 .6em;letter-spacing:-.01em}
+h1{font-size:clamp(30px,5.4vw,60px);max-width:16ch}
+h2{font-size:clamp(24px,3.6vw,40px);max-width:22ch}
+p{margin:0 0 .8em;max-width:60ch;color:var(--ink2)}
+.sub{font-size:1.1em}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:12px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.big{font-family:Newsreader,Georgia,serif;font-size:clamp(28px,4.4vw,48px);font-weight:600;line-height:1.1;color:var(--ink)}
+.lab{font-size:.85em;color:var(--ink2);margin-top:4px}
+.c{color:var(--claim)}.o{color:var(--op)}
+.tw{overflow-x:auto;margin:8px 0}
+table{border-collapse:collapse;width:100%;min-width:420px;font-size:.92em}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{font-weight:500;color:var(--ink2)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.bar{height:14px;border-radius:3px;margin:6px 0 2px}
+.warn{background:var(--warn-bg);color:var(--warn-ink);border-radius:10px;padding:14px 18px;max-width:64ch;margin-top:8px}
+ul{margin:0;padding-left:1.1em;max-width:62ch;color:var(--ink2)}li{margin-bottom:.55em}
+nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px clamp(16px,4vw,40px);border-top:1px solid var(--line);background:var(--card)}
+button{font:inherit;background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 16px;cursor:pointer}
+button:hover{background:var(--bg)}button:focus-visible{outline:2px solid var(--claim);outline-offset:2px}
+button:disabled{opacity:.4;cursor:default}
+#pos{color:var(--ink2);font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<main>
+<section class="s on">
+<h1>Classifying claims and opinions in TikTok videos</h1>
+<p class="sub">Findings from the data exploration, statistical testing and modeling work.</p>
+<p>Data science team, project summary for stakeholders</p>
+</section>
+
+<section class="s">
+<h2>The dataset is clean and evenly split</h2>
+<div class="row">
+<div class="card"><div class="big">19,084</div><div class="lab">videos used, after removing 298 empty records</div></div>
+<div class="card"><div class="big"><span class="c">9,608</span> / <span class="o">9,476</span></div><div class="lab">claim and opinion videos, so no resampling is needed</div></div>
+<div class="card"><div class="big">6%</div><div class="lab">of authors are verified (1,200 videos)</div></div>
+</div>
+<p>Each record has a transcription, duration, author status, and five engagement counts. There are no duplicate video IDs.</p>
+</section>
+
+<section class="s">
+<h2>Claims get far more engagement than opinions</h2>
+<div class="row">
+<div class="card"><div class="lab">Median views, claims</div><div class="big c">501,555</div></div>
+<div class="card"><div class="lab">Median views, opinions</div><div class="big o">4,953</div></div>
+</div>
+<div class="tw"><table>
+<tr><th>Median per video</th><th class="n">Claim</th><th class="n">Opinion</th></tr>
+<tr><td>Likes</td><td class="n">123,649</td><td class="n">823</td></tr>
+<tr><td>Shares</td><td class="n">17,998</td><td class="n">121</td></tr>
+<tr><td>Comments</td><td class="n">286</td><td class="n">1</td></tr>
+</table></div>
+<p>No opinion video has more than 10,000 views. Views alone almost separate the two classes.</p>
+</section>
+
+<section class="s">
+<h2>Verified authors get fewer views, but only because they post opinions</h2>
+<p>A Welch t-test shows verified authors average about 174,000 fewer views (91,439 vs 265,664; p &lt; 0.001; medium effect).</p>
+<div class="tw"><table>
+<tr><th>Mean views</th><th class="n">Verified</th><th class="n">Not verified</th><th class="n">p-value</th></tr>
+<tr><td>All videos</td><td class="n">91,439</td><td class="n">265,664</td><td class="n">&lt; 0.001</td></tr>
+<tr><td>Claim videos only</td><td class="n">501,607</td><td class="n">501,017</td><td class="n">0.98</td></tr>
+<tr><td>Opinion videos only</td><td class="n">4,936</td><td class="n">4,959</td><td class="n">0.81</td></tr>
+</table></div>
+<p>83% of verified authors' videos are opinions. Within each class, verification makes no difference to views.</p>
+</section>
+
+<section class="s">
+<h2>A regression on engagement works, and holds up in cross-validation</h2>
+<div class="tw"><table>
+<tr><th>Logistic regression, 5-fold CV</th><th class="n">Accuracy</th><th class="n">Claim recall</th><th class="n">AUC</th></tr>
+<tr><td>All features</td><td class="n">99.2%</td><td class="n">98.4%</td><td class="n">0.997</td></tr>
+<tr><td>Without views</td><td class="n">97.7%</td><td class="n">96.0%</td><td class="n">0.992</td></tr>
+<tr><td>Duration and author status only</td><td class="n">61.8%</td><td class="n">30.6%</td><td class="n">0.642</td></tr>
+</table></div>
+<p>Results are stable across folds. The model never mislabeled an opinion as a claim; its errors were missed claims.</p>
+<div class="warn">Engagement doesn't exist for a new video, so this model can't classify content at upload time.</div>
+</section>
+
+<section class="s">
+<h2>The final model reads the transcription</h2>
+<div class="row">
+<div class="card"><div class="big">100%</div><div class="lab">accuracy in CV and on a 4,771-video hold-out</div></div>
+<div class="card"><div class="big">0</div><div class="lab">errors on the hold-out set</div></div>
+</div>
+<p>Text (word pairs) plus duration and author status, fed to logistic regression. Claims lean on words like "read", "learned", "media" and "someone". Opinions lean on "my", "our", "family" and "colleagues".</p>
+<div class="warn">A perfect score signals templated wording in this dataset. Real speech will be harder, so expect lower accuracy.</div>
+</section>
+
+<section class="s">
+<h2>Limitations and next steps</h2>
+<ul>
+<li>The transcriptions follow fixed sentence templates, so the model may be learning phrasing rather than what makes something a verifiable claim.</li>
+<li>Test the model on real, unstructured transcripts, or a hand-labeled sample, before any use in review workflows.</li>
+<li>Check robustness by masking the obvious cue words and re-scoring.</li>
+<li>Keep engagement out of the production model, and consider it only for prioritizing already-published videos.</li>
+<li>Track claim recall, since missed claims are the costlier error for moderation.</li>
+</ul>
+</section>
+</main>
+<nav>
+<button id="prev" aria-label="Previous slide">Previous</button>
+<span id="pos" aria-live="polite"></span>
+<button id="next" aria-label="Next slide">Next</button>
+</nav>
+<script>
+var s=document.querySelectorAll('.s'),i=0,p=document.getElementById('prev'),n=document.getElementById('next'),pos=document.getElementById('pos');
+function show(k){i=Math.max(0,Math.min(s.length-1,k));for(var j=0;j<s.length;j++)s[j].classList.toggle('on',j===i);pos.textContent=(i+1)+' / '+s.length;p.disabled=i===0;n.disabled=i===s.length-1;s[i].scrollTop=0}
+p.onclick=function(){show(i-1)};n.onclick=function(){show(i+1)};
+document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();show(i+1)}else if(e.key==='ArrowLeft'){show(i-1)}});
+var x0=null;document.addEventListener('touchstart',function(e){x0=e.touches[0].clientX});
+document.addEventListener('touchend',function(e){if(x0===null)return;var d=e.changedTouches[0].clientX-x0;if(Math.abs(d)>60)show(d<0?i+1:i-1);x0=null});
+show(0);
+</script>
+</body>
+</html>
